@@ -15,12 +15,11 @@ import (
 
 
 func main() {
-	dotenvError := godotenv.Load()
-
-	if dotenvError != nil {
-		fmt.Println("Failed to load .env file")
-		return
-	}
+	 if os.Getenv("PORT") == "" {
+        if err := godotenv.Load(); err != nil {
+            fmt.Println("Info: .env file not found, using environment variables")
+        }
+    }
 
 	client, errors := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGO_URI")))
 
@@ -39,7 +38,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "1000"
 	}
 	err := http.ListenAndServe(":"+port, nil)
 
